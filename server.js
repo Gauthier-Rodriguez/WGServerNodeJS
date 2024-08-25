@@ -9,7 +9,7 @@ app.use(cors());
 
 const io = new Server(http, {
   cors: {
-    origin: 'https://words-game-react-tstw.vercel.app/',
+    origin: 'https://words-game-react-tstw.vercel.app',
   }
 });
 
