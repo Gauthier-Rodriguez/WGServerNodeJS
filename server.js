@@ -25,11 +25,15 @@ http.listen(port, () => {
 io.on('connection', (socket) => {
   console.log(`a user connected : ${socket.id}`);
   
-  socket.on('word', (word) => {
-    console.log(`word: ${word}`);
-    socket.broadcast.emit('p2_word', word);
-    socket.emit('p1_word', word);
-  
+  socket.on('joinRoom', (data) => {
+    console.log(data);
+    socket.join(data);
+  });
+
+  socket.on('word', (data) => {
+    console.log(data);
+    socket.to(data.roomNumber).emit('p2_word', data.word);
+
     socket.on('disconnect', () => {
     console.log(`a user disconnected : ${socket.id}`);
     
