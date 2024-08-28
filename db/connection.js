@@ -7,11 +7,8 @@ const client = new MongoClient(uri, {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
-  },
-  useUnifiedTopology: false, // Use the old topology engine
-  tlsAllowInvalidCertificates: true, // As a temporary measure
+  }
 });
-
 
 async function connectToDatabase() {
   try {
