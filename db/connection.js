@@ -35,9 +35,4 @@ mongoose.connection.on('disconnected', () => {
 
 connectToDatabase();
 
-// Keeping the process alive for debugging purposes
-setTimeout(() => {
-  console.log('Keeping the process alive for debugging...');
-}, 10000);
-
 export default mongoose;

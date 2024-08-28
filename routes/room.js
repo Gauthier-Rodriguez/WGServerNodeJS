@@ -5,21 +5,18 @@ const router = express.Router();
 
 router.get('/test', (req, res) => {
   res.send('test route works!');
-} );
+});
 
 // Get all rooms
 router.get('/', async (req, res) => {
-   try {
-    console.log('Fetching all rooms...');
+  try {
     const results = await Room.find({});
-    console.log('Rooms fetched:', results);
     res.status(200).send(results);
   } catch (err) {
     console.error('Error occurred:', err.stack);
     res.status(500).send({ message: 'Internal Server Error' });
-  } 
+  }
 });
-
 
 // Get available rooms (where currentOccupants < 2)
 router.get('/available', async (req, res) => {
@@ -39,17 +36,10 @@ router.get('/available', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const roomNumber = parseInt(req.params.id, 10);
-    console.log('Querying for roomNumber:', roomNumber);
-    console.log('Type of roomNumber:', typeof roomNumber);
-
-
     const room = await Room.collection.findOne({ roomNumber: roomNumber });
-    console.log('Result from query:', room);
-
     if (!room) {
       return res.status(404).send({ message: 'Room not found' });
     }
-
     res.status(200).send(room);
   } catch (err) {
     console.error('Error during query:', err.stack);
@@ -63,18 +53,16 @@ router.put('/join/:id', async (req, res) => {
     const roomNumber = parseInt(req.params.id);
     const name = req.body.name;
     const room = await Room.findOne({ roomNumber: roomNumber });
-
     if (!room) {
       return res.status(404).send({ message: 'Room not found' });
     }
     if (room.currentOccupants >= room.maxOccupants) {
       return res.status(400).send({ message: 'Room is full' });
     }
-
     const updatedRoom = await Room.findOneAndUpdate(
       { roomNumber: roomNumber },
       { $push: { occupants: { name: name } }, $inc: { currentOccupants: 1 } },
-      { new: true } // `new: true` returns the updated document
+      { new: true }
     );
     res.status(200).send(updatedRoom);
   } catch (err) {
@@ -89,7 +77,6 @@ router.put('/leave/:id', async (req, res) => {
     const roomNumber = parseInt(req.params.id);
     const name = req.body.name;
     const room = await Room.findOne({ roomNumber: roomNumber });
-
     if (!room) {
       return res.status(404).send({ message: 'Room not found' });
     }
@@ -97,13 +84,11 @@ router.put('/leave/:id', async (req, res) => {
     if (!occupantExists) {
       return res.status(400).send({ message: 'Occupant not found in this room' });
     }
-
     const updatedRoom = await Room.findOneAndUpdate(
       { roomNumber: roomNumber },
       { $pull: { occupants: { name: name } }, $inc: { currentOccupants: -1 } },
       { new: true }
     );
-
     res.status(200).send(updatedRoom);
   } catch (err) {
     console.error(err.stack);
