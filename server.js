@@ -12,13 +12,14 @@ const io = new Server(server, {
     origin: '*',
   }
 });
-app.use(cors());
-app.use(express.json());
 
-
-app.use(cors());
+app.use(cors({origin: '*'}));
 app.use(express.json());
 app.use("/rooms", rooms);
+
+app.get('/test', (req, res) => {
+  res.send('test route works!');
+} );
 
 app.get('/', (req, res) => {
   res.send('<h1>Hello world</h1>');
