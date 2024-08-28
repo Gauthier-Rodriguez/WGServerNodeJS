@@ -1,32 +1,43 @@
-import { MongoClient, ServerApiVersion } from 'mongodb';
+import mongoose from 'mongoose';
+
+console.log('Script is running...');
 
 const uri = process.env.ATLAS_URI || '';
-
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
+console.log('MongoDB URI:', uri);
 
 async function connectToDatabase() {
   try {
-    await client.connect();
+    await mongoose.connect(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
 
-    // Ensure that the connection is successful by pinging the database
-    await client.db('admin').command({ ping: 1 });
-    console.log('Connected successfully to server');
-
-    // Return the database object
-    return client.db('wgdb');
+    console.log('MongoDB connected');
   } catch (err) {
-    console.error('Error connecting to MongoDB:', err.stack);
-    process.exit(1); // Exit the process with failure
+    console.error('MongoDB connection error:', err.stack);
+    process.exit(1);
   }
+
+  console.log('Connected successfully to MongoDB using Mongoose');
 }
 
-// Call the function to connect and export the database
-const db = await connectToDatabase();
+mongoose.connection.on('connected', () => {
+  console.log('Mongoose connected to', uri);
+});
 
-export default db;
+mongoose.connection.on('error', (err) => {
+  console.error('Mongoose connection error:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('Mongoose disconnected');
+});
+
+connectToDatabase();
+
+// Keeping the process alive for debugging purposes
+setTimeout(() => {
+  console.log('Keeping the process alive for debugging...');
+}, 10000);
+
+export default mongoose;

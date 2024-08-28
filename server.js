@@ -3,6 +3,8 @@ import express from 'express';
 import {createServer} from 'http';
 import cors from 'cors';
 import { Server } from 'socket.io';
+import './db/connection.js';
+
 const app = express();
 const server = createServer(app);
 const port = process.env.PORT || 3000;
@@ -16,10 +18,6 @@ const io = new Server(server, {
 app.use(cors({origin: '*'}));
 app.use(express.json());
 app.use("/rooms", rooms);
-
-app.get('/test', (req, res) => {
-  res.send('test route works!');
-} );
 
 app.get('/', (req, res) => {
   res.send('<h1>Hello world</h1>');
