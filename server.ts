@@ -11,7 +11,7 @@ const port = process.env.PORT || 3000;
 
 const io = new Server(server, {
   cors: {
-    origin: '*',
+    origin: 'https://words-game-react-tstw.vercel.app/',
   }
 });
 

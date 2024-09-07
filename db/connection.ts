@@ -7,10 +7,7 @@ console.log('MongoDB URI:', uri);
 
 async function connectToDatabase() {
   try {
-    await mongoose.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
+    await mongoose.connect(uri);
 
     console.log('MongoDB connected');
   } catch (err) {
